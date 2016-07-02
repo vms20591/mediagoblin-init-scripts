@@ -27,8 +27,27 @@
 # CHANGE THIS
 # to suit your environment
 ################################################################################
-MG_ROOT=/home/joar/git/mediagoblin
-MG_USER=joar
+MG_ROOT=/srv/mediagoblin.example.org/mediagoblin
+MG_USER=mediagoblin
+
+###############################################################################
+#-----------------------
+#Add your virtualenv root
+#------------------------
+
+#This is added because the default mediagoblin installation creates a local 
+#virtualenv in the root mediagoblin directory
+
+#What if you decided to have virtualenv instead of having inhouse environment?
+#Mediagoblin installation has provided the option to do that while installing
+#Refer: http://mediagoblin.readthedocs.io/en/stable/siteadmin/deploying.html
+
+#In this way, even if you remove the mediagoblin root, the virtualenv with all 
+#the mediagoblin dependencies lives, avoiding the need to reinstall them when
+#setting up mdiagoblin again
+###############################################################################
+PYTHON_ENV_ROOT=/home/mediagoblin/.virtualenvs/mediagoblin_env
+
 ################################################################################
 # NOW STOP
 # You probably won't have to change anything else.
@@ -38,7 +57,16 @@ set -e
 
 DAEMON_NAME=mediagoblin-paster
 
-MG_BIN=$MG_ROOT/bin
+MG_BIN=$PYTHON_ENV_ROOT/bin
+
+###############################################################################
+#If you are not using a separate virtualenv to manage your python environments
+#then fallback to the default inhouse environment config
+###############################################################################
+if [ -z $PYTHON_ENV_ROOT ]; then
+    MG_BIN=$MG_ROOT/bin
+fi
+
 MG_PASTER_BIN=$MG_BIN/paster
 MG_PASTE_INI=$MG_ROOT/paste_local.ini
 MG_FCGI_HOST=127.0.0.1
